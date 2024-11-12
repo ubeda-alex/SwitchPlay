@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rally de Confirma</title>
+    <style>
+
+        /* Reset de márgenes y bordes */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Fondo general con degradado */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #80e0f5, #4d94b0); /* Degradado celeste */
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            padding: 0 20px;
+        }
+
+        /* Título de la página */
+        h1 {
+            font-size: 36px;
+            color: #2c2c2c;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Descripción del estado */
+        #status {
+            font-size: 18px;
+            margin: 20px;
+            color: #000000;
+            font-style: italic;
+            text-transform: capitalize;
+        }
+
+        /* Temporizador */
+        #timer {
+            font-size: 24px;
+            color: #4d4d4d;
+            font-weight: bold;
+        }
+
+        /* Contenedor principal */
+        .content-container {
+            background-color: #ffffff;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            margin-top: 20px;
+        }
+
+        /* Botones principales */
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        button {
+            background-color: #4c9baf;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+            margin: 10px 0;
+        }
+
+        button:hover {
+            background-color: #004b6e;
+            transform: translateY(-3px);
+        }
+
+        button:active {
+            background-color: #1c3894;
+            transform: translateY(2px);
+        }
+
+        /* Estilo para el contenedor de audio */
+        .audio-container {
+            margin-top: 20px;
+        }
+
+        /* Ajustes para pantallas pequeñas */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 28px;
+                padding: 8px;
+            }
+
+            button {
+                font-size: 16px;
+                padding: 12px;
+            }
+
+            .content-container {
+                padding: 20px;
+            }
+        }
+
+        /* Fondo de los botones */
+        button:focus {
+            outline: none;
+        }
+
+        /* Estilo del texto con enlace */
+        .background-text {
+            position: absolute;
+            bottom: 20px;
+            text-align: center;
+            width: 100%;
+            font-size: 18px;
+        }
+
+        .background-text a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 18px;
+            transition: color 0.3s ease;
+        }
+
+        .background-text a:hover {
+            color: #ff00ea;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Rally de Confirma</h1>
+    
+    <div class="content-container">
+        <p id="status">Estado: En espera</p>
+        <p id="timer">Tiempo: 00:00</p> <!-- Temporizador aquí -->
+        
+        <div class="button-container">
+            <button onclick="controlSound('play_waiting')">
+                <span>🎶 Reproducir Música de Espera</span>
+            </button>
+            <button onclick="controlSound('start_game')">
+                <span>🎮 Iniciar Juego</span>
+            </button>
+            <button onclick="controlSound('end_game')">
+                <span>🏁 Finalizar Juego</span>
+            </button>
+        </div>
+        
+        <div class="audio-container">
+            <audio id="audioPlayer" preload="auto">
+                <source id="audioSource" type="audio/mp3">
+            </audio>
+        </div>
+    </div>
+
+    <!-- Texto con enlace a Instagram -->
+    <div class="background-text">
+        <a href="https://www.instagram.com/ubeda_alex_" target="_blank">@ubeda_alex_</a>
+    </div>
+
+    <script>
+        let timerInterval; // Variable para almacenar la referencia al intervalo del temporizador
+        let seconds = 0; // Inicializar los segundos
+
+        function updateTimer() {
+            seconds++;
+            let minutes = Math.floor(seconds / 60);
+            let remainingSeconds = seconds % 60;
+            document.getElementById("timer").innerText = `Tiempo: ${formatTime(minutes)}:${formatTime(remainingSeconds)}`;
+        }
+
+        function formatTime(time) {
+            return time < 10 ? '0' + time : time;
+        }
+
+        function controlSound(action) {
+            fetch(`/${action}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("status").innerText = "Estado: " + data.status;
+
+                    // Determinar qué música reproducir según la acción
+                    let audioSource = document.getElementById("audioSource");
+                    let audioPlayer = document.getElementById("audioPlayer");
+
+                    if (action === 'play_waiting') {
+                        audioSource.src = '/sounds/espera.mp3'; // Música de espera
+                    } else if (action === 'start_game') {
+                        audioSource.src = '/sounds/inicio.mp3'; // Música de inicio
+                        startTimer(); // Iniciar el temporizador al comenzar el juego
+                    } else if (action === 'end_game') {
+                        audioSource.src = '/sounds/fin.mp3'; // Música de finalización
+                        stopTimer(); // Detener el temporizador al finalizar el juego
+                    }
+
+                    // Reproducir el audio
+                    audioPlayer.load();  // Cargar el archivo de audio
+                    audioPlayer.play();  // Reproducir el archivo
+                })
+                .catch(error => console.error("Error:", error));
+        }
+
+        function startTimer() {
+            // Si ya hay un temporizador corriendo, no crear uno nuevo
+            if (timerInterval) return;
+
+            timerInterval = setInterval(updateTimer, 1000); // Actualiza cada segundo
+            seconds = 0; // Reiniciar el contador de segundos
+            document.getElementById("timer").innerText = `Tiempo: 00:00`; // Actualizar el temporizador visual
+        
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval); // Detener el temporizador
+            timerInterval = null;
+            seconds = 0; // Reiniciar el contador de segundos
+            document.getElementById("timer").innerText = `Tiempo: 00:00`; // Actualizar el temporizador visual
+        }
+
+    </script>
+</body>
+</html>
