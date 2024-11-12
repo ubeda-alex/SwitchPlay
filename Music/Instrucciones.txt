@@ -1,0 +1,2 @@
+En esta carpeta (Music), es donde irán las canciones para que el programa pueda reproducir las canciones o sonidos de manera aleatoria.
+Por el momento, solo es compatible con archivos de audio WAV (.wav).
