@@ -1,0 +1,7 @@
+Estos son los sonidos que reproduce el programa.
+"Espera.mp3": La musica de espera que se reproduce de fondo.
+"silvato_inicio.wav": El sonido de silvato que se reproduce al empezar el juego.
+"silvato_final.wav": El sonido de silvato que se reproduce al empezar el juego.
+
+Nota: Estos tres archivos están vacios por los que tienes que descargar o crear los tuyos propios y cambiar el nombre de los archivos
+Asegurate de que los archivos sean el mismo formato (.mp3 o .wav)
